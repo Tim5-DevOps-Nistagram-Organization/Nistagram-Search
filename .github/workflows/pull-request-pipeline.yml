@@ -1,0 +1,17 @@
+name: Pull request pipeline
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+    pull_request_pipeline_job:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+        - name: Build and analyze
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          run: ./create-test-env-run-test.sh ${{ secrets.SONAR_TOKEN_NISTAGRAM_SEARCH }} ${{ github.event.pull_request.head.ref }} ${{ github.event.pull_request.number }} ${{ github.event.pull_request.base.ref }}

@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+    nistagram-search-microservice:
+      build: 
+        context: .
+        dockerfile: Dockerfile
+        target: nistagramSearchMicroserviceTest
+      command: bash -c "mvn -B verify -P${STAGE} sonar:sonar -P${STAGE} -Dsonar.projectKey=${SONAR_PROJ_KEY_SVC} -Dsonar.organization=${SONARCLOUD_ORGANIZATION} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_TOKEN} -Dsonar.branch.name=${BRANCH_NAME} -Dsonar.pullrequest.key=${PULL_KEY} -Dsonar.pullrequest.branch=${PULL_REQUEST_BRANCH} -Dsonar.pullrequest.base=${BASE}"
+      container_name: nistagram-search
+      ports:
+        - 8080:8080
+
+

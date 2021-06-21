@@ -1,0 +1,38 @@
+name: CI-main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    ci_main_pipeline_job:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+        - name: Build and analyze
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: ./create-test-env-run-test.sh ${{ secrets.SONAR_TOKEN_NISTAGRAM_SEARCH }} ${GITHUB_REF#refs/heads/}
+
+        - name: Bump version and push tag
+          id: tag_version
+          uses: mathieudutour/github-tag-action@v5.5
+          with:
+            default_bump: patch
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Create a GitHub release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ steps.tag_version.outputs.new_tag }}
+            release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+            body: ${{ steps.tag_version.outputs.changelog }}
+
+        - name: Build docker image
+          run: ./buildImage.sh ${{ steps.tag_version.outputs.new_tag }} ${{ secrets.DOCKERHUB_PASSWORD }} ${{ secrets.DOCKERHUB_USERNAME }}
