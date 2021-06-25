@@ -7,6 +7,7 @@ public class Constants {
     public static final String AUTH_TOPIC = "auth_topic";
     public static final String AUTH_SEARCH_TOPIC = "auth_search_topic";
 
+    public static final String POST_ORCHESTRATOR_TOPIC = "post_orchestrator_topic";
     public static final String USER_ORCHESTRATOR_TOPIC = "user_orchestrator_topic";
     public static final String SEARCH_TOPIC = "search_topic";
 
