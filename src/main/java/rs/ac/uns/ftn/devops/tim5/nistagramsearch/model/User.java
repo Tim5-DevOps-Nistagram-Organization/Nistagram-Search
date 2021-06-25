@@ -10,18 +10,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+@Entity(name = "user_table")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "user_table")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String username;
-
     private String email;
+
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
 }
