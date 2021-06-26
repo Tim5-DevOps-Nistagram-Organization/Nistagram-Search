@@ -1,7 +1,10 @@
 package rs.ac.uns.ftn.devops.tim5.nistagramsearch.service;
 
+import rs.ac.uns.ftn.devops.tim5.nistagramsearch.exception.ResourceNotFoundException;
+import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.User;
+
 public interface UserService {
     void create(String username, String email);
 
-    void delete(String username);
+    User findByUsername(String username) throws ResourceNotFoundException;
 }
