@@ -1,0 +1,7 @@
+{
+    "retry_join": [
+      "172.19.0.2"
+    ],
+    "data_dir": "/consul-data",
+    "client_addr": "0.0.0.0"
+  }
