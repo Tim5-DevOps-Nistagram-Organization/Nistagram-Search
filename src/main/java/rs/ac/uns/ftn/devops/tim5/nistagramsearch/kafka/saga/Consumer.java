@@ -49,9 +49,9 @@ public class Consumer {
                 try {
                     Post post = new Post(postMessage.getPostId(), postMessage.getMediaId(), postMessage.getUsername(), postMessage.getTags());
                     postService.addNewPost(post);
-                    message.setDetails(message.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
+                    postMessage.setDetails(postMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
                 } catch (Exception e) {
-                    message.setDetails(message.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+                    postMessage.setDetails(postMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
                 }
                 kafkaTemplate.send(postMessage.getTopic(), gson.toJson(postMessage));
             }
