@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.devops.tim5.nistagramsearch.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ public class SearchPostController {
         this.reactionService = reactionService;
     }
 
+    @PreAuthorize("hasRole('ROLE_REGULAR') || hasRole('ROLE_AGENT')")
     @GetMapping(value = "/{myReaction}")
     public ResponseEntity<Collection<PostResponseDTO>> findAllMyByReaction(@PathVariable int myReaction, Principal principal) {
         ReactionEnum reactionEnum = ReactionEnum.of(myReaction);

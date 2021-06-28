@@ -7,4 +7,5 @@ public interface PostService {
     void addNewPost(Post post) throws ResourceNotFoundException;
     Post findById(Long id) throws ResourceNotFoundException;
     Post findByPostId(Long id) throws ResourceNotFoundException;
+    void deleteByPostId(Long id) throws ResourceNotFoundException;
 }

@@ -88,6 +88,15 @@ public class Consumer {
                     }
                     kafkaTemplate.send(reactionMessage.getTopic(), gson.toJson(reactionMessage));
                     break;
+                case Constants.UNAPPROPRIATED_CONTENT_ORCHESTRATOR_TOPIC:
+                    ContentReportMessage reportMessage = gson.fromJson(msg, ContentReportMessage.class);
+                    try {
+                        postService.deleteByPostId(reportMessage.getPostId());
+                        reportMessage.setDetails(reportMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
+                    } catch (Exception e) {
+                        reportMessage.setDetails(reportMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+                    }
+                    kafkaTemplate.send(reportMessage.getTopic(), gson.toJson(reportMessage));
             }
         }
         // For Entity update on original microservice

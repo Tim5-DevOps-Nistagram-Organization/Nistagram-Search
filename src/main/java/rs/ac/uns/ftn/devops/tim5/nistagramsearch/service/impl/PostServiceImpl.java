@@ -39,4 +39,10 @@ public class PostServiceImpl implements PostService {
     public Post findByPostId(Long id) throws ResourceNotFoundException {
         return postRepository.findPostByOriginalPostId(id).orElseThrow(() -> new ResourceNotFoundException("User"));
     }
+
+    @Override
+    public void deleteByPostId(Long id) throws ResourceNotFoundException {
+        Post post = findByPostId(id);
+        postRepository.deleteById(post.getId());
+    }
 }
