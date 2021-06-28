@@ -28,4 +28,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User"));
     }
 
+    @Override
+    public void setSettings(String username, boolean isPrivate) throws ResourceNotFoundException {
+        User user = findByUsername(username);
+        user.setIsPrivate(isPrivate);
+        userRepository.save(user);
+    }
+
 }
