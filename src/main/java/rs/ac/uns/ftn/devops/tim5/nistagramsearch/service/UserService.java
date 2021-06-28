@@ -7,4 +7,6 @@ public interface UserService {
     void create(String username, String email);
 
     User findByUsername(String username) throws ResourceNotFoundException;
+
+    void setSettings(String username, boolean isPrivate) throws ResourceNotFoundException;
 }

@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "user_table")
 @Getter
@@ -22,6 +19,8 @@ public class User {
     private Long id;
     private String username;
     private String email;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isPrivate;
 
     public User(String username, String email) {
         this.username = username;
