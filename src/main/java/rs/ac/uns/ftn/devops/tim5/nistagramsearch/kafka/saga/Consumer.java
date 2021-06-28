@@ -88,6 +88,15 @@ public class Consumer {
                     }
                     kafkaTemplate.send(reactionMessage.getTopic(), gson.toJson(reactionMessage));
                     break;
+                case Constants.UNAPPROPRIATED_CONTENT_ORCHESTRATOR_TOPIC:
+                    ContentReportMessage reportMessage = gson.fromJson(msg, ContentReportMessage.class);
+                    try {
+                        postService.deleteByPostId(reportMessage.getPostId());
+                        reportMessage.setDetails(reportMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
+                    } catch (Exception e) {
+                        reportMessage.setDetails(reportMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+                    }
+                    kafkaTemplate.send(reportMessage.getTopic(), gson.toJson(reportMessage));
             }
         }
         // For Entity update on original microservice
@@ -107,16 +116,28 @@ public class Consumer {
             kafkaTemplate.send(reactionMessage.getTopic(), gson.toJson(reactionMessage));
         }
         // For Entity delete on original microservice
-        else if (message.getAction().equals(Constants.DELETE_ACTION) &&
-                message.getReplayTopic().equals(Constants.REACTION_ORCHESTRATOR_TOPIC)) {
-            ReactionMessage reactionMessage = gson.fromJson(msg, ReactionMessage.class);
-            try {
-                reactionService.deleteReaction(reactionMessage.getReactionId());
-                reactionMessage.setDetails(reactionMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
-            } catch (Exception e) {
-                reactionMessage.setDetails(reactionMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+        else if (message.getAction().equals(Constants.DELETE_ACTION)) {
+            if (message.getReplayTopic().equals(Constants.REACTION_ORCHESTRATOR_TOPIC)) {
+                ReactionMessage reactionMessage = gson.fromJson(msg, ReactionMessage.class);
+                try {
+                    reactionService.deleteReaction(reactionMessage.getReactionId());
+                    reactionMessage.setDetails(reactionMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
+                } catch (Exception e) {
+                    reactionMessage.setDetails(reactionMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+                }
+                kafkaTemplate.send(reactionMessage.getTopic(), gson.toJson(reactionMessage));
             }
-            kafkaTemplate.send(reactionMessage.getTopic(), gson.toJson(reactionMessage));
+            if (message.getReplayTopic().equals(Constants.POST_ORCHESTRATOR_TOPIC)) {
+                PostMessage postMessage = gson.fromJson(msg, PostMessage.class);
+                try {
+                    postService.deleteByPostId(postMessage.getPostId());
+                    postMessage.setDetails(postMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
+                } catch (Exception e) {
+                    postMessage.setDetails(postMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+                }
+                kafkaTemplate.send(postMessage.getTopic(), gson.toJson(postMessage));
+            }
+
         }
     }
 }
