@@ -10,6 +10,7 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.kafka.Constants;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.Post;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.kafka.Message;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.kafka.PostMessage;
+import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.kafka.SettingsMessage;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.kafka.UserMessage;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.PostService;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.Reaction;
