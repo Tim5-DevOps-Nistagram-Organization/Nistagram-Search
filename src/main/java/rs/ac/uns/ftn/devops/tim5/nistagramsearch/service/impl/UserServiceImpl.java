@@ -1,6 +1,9 @@
 package rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.exception.ResourceNotFoundException;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.User;
@@ -33,6 +36,12 @@ public class UserServiceImpl implements UserService {
         User user = findByUsername(username);
         user.setIsPrivate(isPrivate);
         userRepository.save(user);
+    }
+
+    @Override
+    public Page<User> search(String username, int numOfPage, int sizeOfPage) {
+        Pageable pageable = PageRequest.of(numOfPage, sizeOfPage);
+        return userRepository.findAllByUsernameContains(username, pageable);
     }
 
 }
