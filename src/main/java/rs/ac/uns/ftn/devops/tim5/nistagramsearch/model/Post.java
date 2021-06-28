@@ -44,4 +44,8 @@ public class Post {
         this.tags = tags.stream().map(Tag::new).collect(Collectors.toSet());
     }
 
+    public Post(Long postId){
+        this.postId =postId;
+    }
+
 }
