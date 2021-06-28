@@ -3,7 +3,7 @@ package rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.enums;
 import java.util.stream.Stream;
 
 public enum ReactionEnum {
-    LIKE(1), DISLIKE(2), FAVOURITES(3);
+    LIKE(1), DISLIKE(2);
 
     private int value;
 
