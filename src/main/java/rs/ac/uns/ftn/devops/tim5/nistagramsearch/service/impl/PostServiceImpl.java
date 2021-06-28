@@ -29,4 +29,14 @@ public class PostServiceImpl implements PostService {
         post.setUser(userService.findByUsername(post.getUser().getUsername()));
         postRepository.save(post);
     }
+
+    @Override
+    public Post findById(Long id) throws ResourceNotFoundException {
+        return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User"));
+    }
+
+    @Override
+    public Post findByPostId(Long id) throws ResourceNotFoundException {
+        return postRepository.findPostByOriginalPostId(id).orElseThrow(() -> new ResourceNotFoundException("User"));
+    }
 }
