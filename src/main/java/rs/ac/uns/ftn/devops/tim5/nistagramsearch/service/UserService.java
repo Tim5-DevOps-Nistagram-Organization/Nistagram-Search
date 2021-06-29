@@ -5,7 +5,7 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.exception.ResourceNotFoundExcep
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.User;
 
 public interface UserService {
-    void create(String username, String email);
+    void create(String username, String email, String websiteUrl);
 
     User findByUsername(String username) throws ResourceNotFoundException;
 
