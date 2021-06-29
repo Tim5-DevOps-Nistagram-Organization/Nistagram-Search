@@ -45,7 +45,7 @@ public class Consumer {
                 case Constants.USER_ORCHESTRATOR_TOPIC:
                     UserMessage userMessage = gson.fromJson(msg, UserMessage.class);
                     try {
-                        userService.create(userMessage.getUsername(), userMessage.getEmail());
+                        userService.create(userMessage.getUsername(), userMessage.getEmail(), userMessage.getWebsiteUrl());
                         userMessage.setDetails(userMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
                     } catch (Exception e) {
                         userMessage.setDetails(userMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);

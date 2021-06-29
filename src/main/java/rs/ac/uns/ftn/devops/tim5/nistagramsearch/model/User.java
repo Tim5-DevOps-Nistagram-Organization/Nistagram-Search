@@ -21,6 +21,7 @@ public class User {
     private String email;
     @Column(columnDefinition = "boolean default false")
     private Boolean isPrivate;
+    private String websiteUrl;
 
     public User(String username, String email) {
         this.username = username;
