@@ -7,10 +7,13 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.kafka.Constants;
+import rs.ac.uns.ftn.devops.tim5.nistagramsearch.mapper.CampaignMapper;
+import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.Campaign;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.Post;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.Reaction;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.enums.ReactionEnum;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.kafka.*;
+import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.CampaignService;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.PostService;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.ReactionService;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.UserService;
@@ -21,6 +24,7 @@ public class Consumer {
     private final UserService userService;
     private final PostService postService;
     private final ReactionService reactionService;
+    private final CampaignService campaignService;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final Gson gson;
 
@@ -28,11 +32,13 @@ public class Consumer {
     public Consumer(UserService userService,
                     PostService postService,
                     ReactionService reactionService,
+                    CampaignService campaignService,
                     KafkaTemplate<String, String> kafkaTemplate,
                     Gson gson) {
         this.userService = userService;
         this.postService = postService;
         this.reactionService = reactionService;
+        this.campaignService =campaignService;
         this.kafkaTemplate = kafkaTemplate;
         this.gson = gson;
     }
@@ -88,6 +94,7 @@ public class Consumer {
                     }
                     kafkaTemplate.send(reactionMessage.getTopic(), gson.toJson(reactionMessage));
                     break;
+                    // delete post if it marked as unappropriated
                 case Constants.UNAPPROPRIATED_CONTENT_ORCHESTRATOR_TOPIC:
                     ContentReportMessage reportMessage = gson.fromJson(msg, ContentReportMessage.class);
                     try {
@@ -97,6 +104,19 @@ public class Consumer {
                         reportMessage.setDetails(reportMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
                     }
                     kafkaTemplate.send(reportMessage.getTopic(), gson.toJson(reportMessage));
+                    break;
+                    // add new campaign
+                case Constants.CAMPAIGN_ORCHESTRATOR_TOPIC:
+                    CampaignMessage campaignMessage = gson.fromJson(msg, CampaignMessage.class);
+                    try {
+                        Campaign campaign = CampaignMapper.toEntity(campaignMessage);
+                        campaignService.add(campaign);
+                        campaignMessage.setDetails(campaignMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
+                    } catch (Exception e) {
+                        campaignMessage.setDetails(campaignMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+                    }
+                    kafkaTemplate.send(campaignMessage.getTopic(), gson.toJson(campaignMessage));
+                    break;
             }
         }
         // For Entity update on original microservice
@@ -136,6 +156,18 @@ public class Consumer {
                     postMessage.setDetails(postMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
                 }
                 kafkaTemplate.send(postMessage.getTopic(), gson.toJson(postMessage));
+            }
+            if (message.getReplayTopic().equals(Constants.CAMPAIGN_ORCHESTRATOR_TOPIC)) {
+                CampaignMessage campaignMessage = gson.fromJson(msg, CampaignMessage.class);
+                try {
+                    campaignService.delete(campaignMessage.getCampaignId());
+                    campaignMessage.setDetails(campaignMessage.getReplayTopic(),
+                            Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
+                } catch (Exception e) {
+                    campaignMessage.setDetails(campaignMessage.getReplayTopic(),
+                            Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+                }
+                kafkaTemplate.send(campaignMessage.getTopic(), gson.toJson(campaignMessage));
             }
 
         }
