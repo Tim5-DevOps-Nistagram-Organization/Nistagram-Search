@@ -6,9 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.exception.ResourceNotFoundException;
+import rs.ac.uns.ftn.devops.tim5.nistagramsearch.kafka.Constants;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.User;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.repository.UserRepository;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.UserService;
+
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,6 +46,35 @@ public class UserServiceImpl implements UserService {
     public Page<User> search(String username, int numOfPage, int sizeOfPage) {
         Pageable pageable = PageRequest.of(numOfPage, sizeOfPage);
         return userRepository.findAllByUsernameContains(username, pageable);
+    }
+
+    @Override
+    public void follow(String userUsername, String followingUsername, String followAction) throws ResourceNotFoundException {
+        User user = findByUsername(userUsername);
+        User followingUser = findByUsername(followingUsername);
+        switch (followAction) {
+            case Constants.FOLLOW_ACTION:
+                user.getFollowing().add(followingUser);
+                break;
+            case Constants.UNFOLLOW_ACTION:
+                user.setFollowing(user.getFollowing().stream()
+                        .filter(u -> !u.getUsername().equals(followingUsername))
+                        .collect(Collectors.toSet()));
+                user.setMuted(user.getMuted().stream()
+                        .filter(u -> !u.getUsername().equals(followingUsername))
+                        .collect(Collectors.toSet()));
+                break;
+            case Constants.MUTE_ACTION:
+                if (user.getFollowing().stream().anyMatch(u -> u.getUsername().equals(followingUsername)))
+                    user.getMuted().add(followingUser);
+                break;
+            case Constants.UNMUTE_ACTION:
+                user.setMuted(user.getMuted().stream()
+                        .filter(u -> !u.getUsername().equals(followingUsername))
+                        .collect(Collectors.toSet()));
+                break;
+        }
+        userRepository.save(user);
     }
 
 }

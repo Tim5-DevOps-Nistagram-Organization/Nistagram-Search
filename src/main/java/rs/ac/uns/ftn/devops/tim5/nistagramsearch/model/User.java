@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity(name = "user_table")
 @Getter
@@ -22,6 +23,12 @@ public class User {
     @Column(columnDefinition = "boolean default false")
     private Boolean isPrivate;
     private String websiteUrl;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<User> following;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<User> muted;
 
     public User(String username, String email) {
         this.username = username;

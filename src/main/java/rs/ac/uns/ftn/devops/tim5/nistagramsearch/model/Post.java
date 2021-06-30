@@ -28,7 +28,7 @@ public class Post {
     private Long mediaId;
 
     @CreatedDate
-    private Date created;
+    private Date created = new Date();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -44,8 +44,8 @@ public class Post {
         this.tags = tags.stream().map(Tag::new).collect(Collectors.toSet());
     }
 
-    public Post(Long postId){
-        this.postId =postId;
+    public Post(Long postId) {
+        this.postId = postId;
     }
 
 }

@@ -38,7 +38,7 @@ public class Consumer {
         this.userService = userService;
         this.postService = postService;
         this.reactionService = reactionService;
-        this.campaignService =campaignService;
+        this.campaignService = campaignService;
         this.kafkaTemplate = kafkaTemplate;
         this.gson = gson;
     }
@@ -94,7 +94,7 @@ public class Consumer {
                     }
                     kafkaTemplate.send(reactionMessage.getTopic(), gson.toJson(reactionMessage));
                     break;
-                    // delete post if it marked as unappropriated
+                // delete post if it marked as unappropriated
                 case Constants.UNAPPROPRIATED_CONTENT_ORCHESTRATOR_TOPIC:
                     ContentReportMessage reportMessage = gson.fromJson(msg, ContentReportMessage.class);
                     try {
@@ -105,7 +105,7 @@ public class Consumer {
                     }
                     kafkaTemplate.send(reportMessage.getTopic(), gson.toJson(reportMessage));
                     break;
-                    // add new campaign
+                // add new campaign
                 case Constants.CAMPAIGN_ORCHESTRATOR_TOPIC:
                     CampaignMessage campaignMessage = gson.fromJson(msg, CampaignMessage.class);
                     try {
@@ -116,6 +116,18 @@ public class Consumer {
                         campaignMessage.setDetails(campaignMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
                     }
                     kafkaTemplate.send(campaignMessage.getTopic(), gson.toJson(campaignMessage));
+                    break;
+                case Constants.USER_FOLLOW_ORCHESTRATOR_TOPIC:
+                    FollowMessage followMessage = gson.fromJson(msg, FollowMessage.class);
+                    try {
+                        userService.follow(followMessage.getUserUsername(), followMessage.getFollowingUsername(),
+                                followMessage.getFollowAction());
+                        followMessage.setDetails(followMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.DONE_ACTION);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        followMessage.setDetails(followMessage.getReplayTopic(), Constants.SEARCH_TOPIC, Constants.ERROR_ACTION);
+                    }
+                    kafkaTemplate.send(followMessage.getTopic(), gson.toJson(followMessage));
                     break;
             }
         }
