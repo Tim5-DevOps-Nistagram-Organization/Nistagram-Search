@@ -12,4 +12,6 @@ public interface UserService {
     void setSettings(String username, boolean isPrivate) throws ResourceNotFoundException;
 
     Page<User> search(String username, int numOfPage, int sizeOfPage);
+
+    void follow(String userUsername, String followingUsername, String followAction) throws ResourceNotFoundException;
 }

@@ -13,7 +13,7 @@ import java.util.Objects;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(value = {Exception.class})
+    @ExceptionHandler(value = {Exception.class, CanNotAccessException.class})
     public ResponseEntity<ErrorMessageDTO> handleException(Exception e) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         ErrorMessageDTO errorMessageDTO = new ErrorMessageDTO(e.getMessage(), badRequest, ZonedDateTime.now());
