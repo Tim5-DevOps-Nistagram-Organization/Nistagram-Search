@@ -8,6 +8,9 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.repository.CampaignRepository;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.CampaignService;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.UserService;
 
+import java.util.Collection;
+import java.util.Date;
+
 @Service
 public class CampaignServiceImpl implements CampaignService {
 
@@ -36,5 +39,10 @@ public class CampaignServiceImpl implements CampaignService {
     public void delete(Long id) throws ResourceNotFoundException {
         Campaign campaign = campaignRepository.findByOriginalCampaignId(id);
         campaignRepository.delete(campaign);
+    }
+
+    @Override
+    public Collection<Campaign> getAllActiveByAgent(String agentUsername) {
+        return campaignRepository.getAllActiveByAgent(agentUsername, new Date(), new Date());
     }
 }

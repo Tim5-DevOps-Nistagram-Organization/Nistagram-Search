@@ -7,6 +7,7 @@ import lombok.Setter;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.enums.CampaignEnum;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 @Getter
@@ -35,5 +36,9 @@ public class Campaign {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private User agent;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @JoinColumn
+    private Collection<Advertisement> advertisements;
 
 }

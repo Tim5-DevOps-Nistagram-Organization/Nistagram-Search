@@ -17,7 +17,8 @@ public class CampaignMapper {
                 campaignMessage.getEndDate(),
                 campaignMessage.getNumShowsPerDay(),
                 campaignMessage.getType(),
-                new User(campaignMessage.getAgentUsername()));
+                new User(campaignMessage.getAgentUsername()),
+                campaignMessage.getAdvertisements());
     }
 
 }

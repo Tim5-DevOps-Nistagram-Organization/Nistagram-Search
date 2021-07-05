@@ -25,8 +25,10 @@ public class PostController {
     private final PostService postService;
     private final ReactionService reactionService;
 
+
     @Autowired
-    public PostController(PostService postService, ReactionService reactionService) {
+    public PostController(PostService postService,
+                          ReactionService reactionService) {
         this.postService = postService;
         this.reactionService = reactionService;
     }
@@ -34,7 +36,7 @@ public class PostController {
     @GetMapping(value = "/home")
     public ResponseEntity<Page<PostResponseDTO>> home(@RequestParam int numOfPage,
                                                       @RequestParam int sizeOfPage,
-                                                      Principal principal) {
+                                                      Principal principal) throws ResourceNotFoundException {
         if (principal == null)
             return new ResponseEntity<>(
                     postService.homeForAll(numOfPage, sizeOfPage)
