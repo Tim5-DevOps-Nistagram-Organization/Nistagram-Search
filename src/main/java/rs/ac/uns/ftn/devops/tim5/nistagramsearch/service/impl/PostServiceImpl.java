@@ -31,10 +31,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void addNewPost(Post post) throws ResourceNotFoundException {
+    public Post addNewPost(Post post) throws ResourceNotFoundException {
         post.setTags(tagService.getTagsForPost(post.getTags()));
         post.setUser(userService.findByUsername(post.getUser().getUsername()));
-        postRepository.save(post);
+        return postRepository.save(post);
     }
 
     @Override

@@ -8,7 +8,7 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.Post;
 import java.security.Principal;
 
 public interface PostService {
-    void addNewPost(Post post) throws ResourceNotFoundException;
+    Post addNewPost(Post post) throws ResourceNotFoundException;
 
     Post findByPostId(Long id) throws ResourceNotFoundException;
 
