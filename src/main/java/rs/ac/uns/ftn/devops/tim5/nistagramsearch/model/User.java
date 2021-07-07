@@ -21,7 +21,7 @@ public class User {
     private String username;
     private String email;
     @Column(columnDefinition = "boolean default false")
-    private Boolean isPrivate;
+    private Boolean isPrivate = false;
     private String websiteUrl;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
