@@ -7,7 +7,6 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.kafka.CampaignMessage;
 public class CampaignMapper {
 
     private CampaignMapper() {
-
     }
 
     public static Campaign toEntity(CampaignMessage campaignMessage) {

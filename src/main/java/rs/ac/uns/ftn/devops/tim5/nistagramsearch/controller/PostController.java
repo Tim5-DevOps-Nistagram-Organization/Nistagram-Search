@@ -5,7 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.dto.PostResponseDTO;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.exception.CanNotAccessException;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.exception.ResourceNotFoundException;
@@ -15,8 +18,6 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.PostService;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.ReactionService;
 
 import java.security.Principal;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/post")
@@ -36,7 +37,7 @@ public class PostController {
     @GetMapping(value = "/home")
     public ResponseEntity<Page<PostResponseDTO>> home(@RequestParam int numOfPage,
                                                       @RequestParam int sizeOfPage,
-                                                      Principal principal) throws ResourceNotFoundException {
+                                                      Principal principal) {
         if (principal == null)
             return new ResponseEntity<>(
                     postService.homeForAll(numOfPage, sizeOfPage)
@@ -77,15 +78,14 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('ROLE_REGULAR') || hasRole('ROLE_AGENT')")
-    @GetMapping(value = "/reaction/{myReaction}")
-    public ResponseEntity<Collection<PostResponseDTO>> findAllMyByReaction(@PathVariable int myReaction, Principal principal) {
-        ReactionEnum reactionEnum = ReactionEnum.of(myReaction);
-        Collection<PostResponseDTO> postResponseDTOS =
-                reactionService.findMyAllReactions(principal.getName(), reactionEnum)
-                        .stream().map(PostMapper::fromReactionToPostResponseDTO)
-                        .collect(Collectors.toList());
-
-        return new ResponseEntity<>(postResponseDTOS, HttpStatus.OK);
+    @GetMapping(value = "/reaction")
+    public ResponseEntity<Page<PostResponseDTO>> findAllMyByReaction(@RequestParam int myReaction,
+                                                                     @RequestParam int numOfPage,
+                                                                     @RequestParam int sizeOfPage,
+                                                                     Principal principal) {
+        return new ResponseEntity<>(reactionService
+                .findMyAllReactions(ReactionEnum.of(myReaction), numOfPage, sizeOfPage, principal.getName())
+                .map(PostMapper::fromReactionToPostResponseDTO), HttpStatus.OK);
 
     }
 }

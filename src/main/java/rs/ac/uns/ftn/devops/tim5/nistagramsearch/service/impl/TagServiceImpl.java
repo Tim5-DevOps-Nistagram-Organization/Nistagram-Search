@@ -6,7 +6,6 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.Tag;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.repository.TagRepository;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.TagService;
 
-import javax.swing.text.html.Option;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;

@@ -7,13 +7,11 @@ import java.util.Collection;
 
 public interface CampaignService {
 
-    Campaign findById(Long id) throws ResourceNotFoundException;
     Campaign add(Campaign campaign) throws ResourceNotFoundException;
+
     void delete(Long id) throws ResourceNotFoundException;
+
     Collection<Campaign> getAllActiveByAgent(String agentUsername);
-
-
-
 
 
 }

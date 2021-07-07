@@ -20,19 +20,20 @@ public class User {
     private Long id;
     private String username;
     private String email;
-    @Column(columnDefinition = "boolean default false")
     private Boolean isPrivate = false;
     private String websiteUrl;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<User> following;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<User> muted;
 
-    public User(String username, String email) {
+    public User(String username, String email, String websiteUrl) {
         this.username = username;
         this.email = email;
+        this.websiteUrl = websiteUrl;
+        this.isPrivate = false;
     }
 
     public User(String username) {

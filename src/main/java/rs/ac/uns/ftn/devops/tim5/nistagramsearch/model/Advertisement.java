@@ -20,9 +20,8 @@ public class Advertisement {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    String websiteUrl;
-    String mediaId;
+    private String websiteUrl;
+    private Long mediaId;
 
 
 }

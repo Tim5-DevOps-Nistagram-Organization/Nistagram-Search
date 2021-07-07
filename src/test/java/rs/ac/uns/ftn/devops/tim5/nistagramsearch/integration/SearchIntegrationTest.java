@@ -4,15 +4,11 @@ package rs.ac.uns.ftn.devops.tim5.nistagramsearch.integration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.data.domain.Page;
-import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.util.UriComponentsBuilder;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.constants.*;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.dto.PostResponseDTO;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.dto.UserDTO;
@@ -27,11 +23,12 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.ReactionService;
 import rs.ac.uns.ftn.devops.tim5.nistagramsearch.service.UserService;
 
 import javax.transaction.Transactional;
-import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -39,10 +36,6 @@ import static org.junit.Assert.*;
 @AutoConfigureMockMvc
 @Transactional
 public class SearchIntegrationTest {
-
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @Autowired
     private UserService userService;
@@ -54,18 +47,18 @@ public class SearchIntegrationTest {
     private ReactionService reactionService;
 
     /*
-    *  Method test User search
-    *  Should return user with username UserConstants.USERNAME1 as only search results
-    *
-    * */
+     *  Method test User search
+     *  Should return user with username UserConstants.USERNAME1 as only search results
+     *
+     * */
     @Test
-    public void testProfileSearch_Success() throws URISyntaxException {
+    public void testProfileSearch_Success() {
 
         // create user for Search
         userService.create(UserConstants.USERNAME1, UserConstants.EMAIL, "");
 
         // test Profile search
-        Page<UserDTO> retVal =  userService
+        Page<UserDTO> retVal = userService
                 .search(UserConstants.USERNAME1, 0, 10).map(UserMapper::toDTO);
 
         assertEquals(1, retVal.getTotalElements());
@@ -76,15 +69,15 @@ public class SearchIntegrationTest {
     }
 
     /*
-    *   Method test Post search by tag
-    *
-    *   Create post with tag for search
-    *
-    *   Should return previous created post
-    *
-    * */
+     *   Method test Post search by tag
+     *
+     *   Create post with tag for search
+     *
+     *   Should return previous created post
+     *
+     * */
     @Test
-    public void testTagSearchForAll_Success() throws URISyntaxException, ResourceNotFoundException {
+    public void testTagSearchForAll_Success() throws ResourceNotFoundException {
 
 
         // create post with tags
@@ -101,7 +94,7 @@ public class SearchIntegrationTest {
 
         //search post by tag
         Page<PostResponseDTO> retVal = postService.searchForAll(TagConstants.TAG1, 0, 10)
-                        .map(PostMapper::toDto);
+                .map(PostMapper::toDto);
 
         assertEquals(1, retVal.getTotalElements());
         PostResponseDTO retValPost = retVal.get().collect(Collectors.toList()).get(0);
@@ -148,20 +141,17 @@ public class SearchIntegrationTest {
         assertEquals(reaction.getUser().getUsername(), UserConstants.USERNAME3);
 
 
-        Collection<PostResponseDTO> postResponseDTOS =
-                reactionService.findMyAllReactions(UserConstants.USERNAME3, ReactionEnum.LIKE)
-                        .stream().map(PostMapper::fromReactionToPostResponseDTO)
-                        .collect(Collectors.toList());
+        Page<PostResponseDTO> postResponseDTOS =
+                reactionService.findMyAllReactions(ReactionEnum.LIKE, 0, 10, UserConstants.USERNAME3)
+                        .map(PostMapper::fromReactionToPostResponseDTO);
 
 
-        assertEquals(1, postResponseDTOS.size());
-        PostResponseDTO responseDTO = postResponseDTOS.stream().collect(Collectors.toList()).get(0);
+        assertEquals(1, postResponseDTOS.getTotalElements());
+        PostResponseDTO responseDTO = postResponseDTOS.getContent().get(0);
         assertEquals(reaction.getPost().getPostId(), responseDTO.getPostId());
         assertEquals(reaction.getPost().getMediaId(), responseDTO.getMediaId());
 
     }
-
-
 
 
 }

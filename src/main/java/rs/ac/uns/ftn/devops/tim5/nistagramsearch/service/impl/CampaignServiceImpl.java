@@ -14,19 +14,14 @@ import java.util.Date;
 @Service
 public class CampaignServiceImpl implements CampaignService {
 
-    private CampaignRepository campaignRepository;
-    private UserService userService;
+    private final CampaignRepository campaignRepository;
+    private final UserService userService;
 
     @Autowired
     public CampaignServiceImpl(CampaignRepository campaignRepository,
-                               UserService userService){
+                               UserService userService) {
         this.campaignRepository = campaignRepository;
         this.userService = userService;
-    }
-
-    @Override
-    public Campaign findById(Long id) throws ResourceNotFoundException {
-        return campaignRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Campaign"));
     }
 
     @Override
@@ -36,7 +31,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public void delete(Long id) throws ResourceNotFoundException {
+    public void delete(Long id) {
         Campaign campaign = campaignRepository.findByOriginalCampaignId(id);
         campaignRepository.delete(campaign);
     }

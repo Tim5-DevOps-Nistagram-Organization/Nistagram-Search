@@ -33,23 +33,11 @@ public class Reaction {
     @JoinColumn
     private User user;
 
-
-    public Reaction(ReactionEnum reaction, Post post) {
-        this.id = null;
-        this.user = null;
-        this.reaction = reaction;
-        this.post = post;
-    }
-
     public Reaction(Long reactionId, ReactionEnum reaction, Long postId, String username) {
         this.reactionId = reactionId;
         this.user = new User(username);
         this.reaction = reaction;
         this.post = new Post(postId);
-    }
-
-    public Reaction(Long reactionId) {
-        this.reactionId = reactionId;
     }
 
 }
