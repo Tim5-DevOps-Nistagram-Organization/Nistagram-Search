@@ -5,8 +5,8 @@ import rs.ac.uns.ftn.devops.tim5.nistagramsearch.model.Advertisement;
 
 import java.util.Collection;
 
-public interface AdvertismentService {
+public interface AdvertisementService {
 
-    Collection<Advertisement> getAdvertismentByUser(String username, double numHomeVisit) throws ResourceNotFoundException;
+    Collection<Advertisement> getAdvertisementByUser(String username, double numHomeVisit) throws ResourceNotFoundException;
 
 }

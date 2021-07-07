@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CampaignMessage extends Message{
+public class CampaignMessage extends Message {
 
     private Long campaignId;
     private Date startDate;
@@ -24,27 +24,5 @@ public class CampaignMessage extends Message{
     private CampaignEnum type;
     private String agentUsername;
     private Collection<Advertisement> advertisements;
-
-
-    public CampaignMessage(String topic, String replayTopic, String action,
-                           Long campaignId, Date startDate,
-                           Date endDate, int numShowsPerDay, CampaignEnum type,
-                           String agentUsername,
-                           Collection<Advertisement> advertisements) {
-        super(topic, replayTopic, action);
-        this.campaignId = campaignId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.numShowsPerDay = numShowsPerDay;
-        this.type = type;
-        this.agentUsername = agentUsername;
-        this.advertisements = advertisements;
-    }
-
-    public CampaignMessage(String topic, String replayTopic, String action,
-                           Long campaignId) {
-        super(topic, replayTopic, action);
-        this.campaignId = campaignId;
-    }
 
 }

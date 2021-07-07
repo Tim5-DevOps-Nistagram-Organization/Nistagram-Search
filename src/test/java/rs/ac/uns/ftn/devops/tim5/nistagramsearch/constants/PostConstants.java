@@ -4,6 +4,6 @@ public class PostConstants {
 
     private PostConstants(){}
 
-    public static Long VALID_POST_ID = 1l;
+    public static Long VALID_POST_ID = 1L;
 
 }

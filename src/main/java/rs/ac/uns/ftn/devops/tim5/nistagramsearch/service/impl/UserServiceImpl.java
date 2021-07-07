@@ -25,8 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void create(String username, String email, String websiteUrl) {
-        User user = new User(username, email);
-        user.setWebsiteUrl(websiteUrl);
+        User user = new User(username, email, websiteUrl);
         userRepository.save(user);
     }
 

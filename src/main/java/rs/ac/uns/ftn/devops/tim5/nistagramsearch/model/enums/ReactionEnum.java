@@ -11,14 +11,14 @@ public enum ReactionEnum {
         this.value = value;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public static ReactionEnum of(int value) {
         return Stream.of(ReactionEnum.values())
                 .filter(p -> p.getValue() == value)
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public int getValue() {
+        return value;
     }
 }

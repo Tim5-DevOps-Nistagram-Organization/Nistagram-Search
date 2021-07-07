@@ -51,29 +51,25 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<Post> searchForAll(String tag, int numOfPage, int sizeOfPage) {
         Pageable pageable = PageRequest.of(numOfPage, sizeOfPage);
-        return postRepository.findAllByTags_TitleAndUser_IsPrivate(tag, false, pageable);
+        return postRepository.findAllTags(tag, pageable);
     }
 
     @Override
     public Page<Post> search(String tag, int numOfPage, int sizeOfPage, String username) {
         Pageable pageable = PageRequest.of(numOfPage, sizeOfPage);
-        return postRepository
-                .findAllByTags_TitleAndUser_IsPrivateOrTags_TitleAndUser_Following_Username
-                        (tag, false, tag, username, pageable);
+        return postRepository.findAllTagsByUser(tag, username, pageable);
     }
 
     @Override
     public Page<Post> homeForAll(int numOfPage, int sizeOfPage) {
         Pageable pageable = PageRequest.of(numOfPage, sizeOfPage);
-        return postRepository.findAllByUser_IsPrivateOrderByCreatedDesc(false, pageable);
+        return postRepository.findAllHome(pageable);
     }
 
     @Override
     public Page<Post> home(int numOfPage, int sizeOfPage, String username) {
         Pageable pageable = PageRequest.of(numOfPage, sizeOfPage);
-        return postRepository
-                .findAllByUser_IsPrivateOrUser_Following_UsernameOrderByCreatedDesc
-                        (false, username, pageable);
+        return postRepository.findAllHomeByUser(username, pageable);
     }
 
     @Override
