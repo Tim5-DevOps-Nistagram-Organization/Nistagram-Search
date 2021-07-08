@@ -28,7 +28,7 @@ public class AdvertisementController {
         this.advertisementService = advertisementService;
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<Collection<AdvertisementDTO>> getAdds(@RequestParam int numOfVisit,
                                                                 Principal principal) throws ResourceNotFoundException {
 
